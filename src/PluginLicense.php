@@ -4,7 +4,7 @@ namespace DiviFramework\UpdateChecker;
 
 use Puc_v4_Factory;
 
-class License {
+class PluginLicense {
 	protected $container;
 	protected $baseUrl;
 	protected $tokenOptionsKey;
@@ -31,6 +31,9 @@ class License {
 
 			if (!$token && !empty($token)) {
 				$additionalHeaders['Authorization'] = 'Bearer ' . $token;
+			} else {
+				// ensure option is delete. Next page reload will prompt for login.
+				delete_option($key);
 			}
 
 			$options['headers'] = array_merge($options['headers'], $additionalHeaders);
