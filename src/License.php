@@ -2,6 +2,8 @@
 
 namespace DiviFramework\UpdateChecker;
 
+use Puc_v4_Factory;
+
 class License {
 	protected $container;
 	protected $baseUrl;
@@ -21,15 +23,13 @@ class License {
 			$this->container['plugin_slug']
 		);
 
-		// add_filter($this->updateChecker->getUniqueName('request_info_options'), array($this, 'request_info_options'));
-
 		// add authorization header.
 		$key = $this->tokenOptionsKey;
 		$this->updateChecker->addHttpRequestArgFilter(function ($options) use ($key) {
 			$additionalHeaders = array();
 			$token = get_option($key, false);
 
-			if (!$token) {
+			if (!$token && !empty($token)) {
 				$additionalHeaders['Authorization'] = 'Bearer ' . $token;
 			}
 
@@ -37,6 +37,15 @@ class License {
 			return $options;
 		});
 
+		add_filter($this->updateChecker->getUniqueName('request_metadata_http_result'), function ($result) use ($key) {
+			//token error.
+			if ($result['response']['code'] == 403) {
+				// remove option
+				delete_option($key);
+				// redirect to login page?
+			}
+			return $result;
+		});
 	}
 
 }
