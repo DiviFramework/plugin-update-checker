@@ -11,5 +11,10 @@
             "name": "Ketan Shah",
             "email": "ketan.shah@gmail.com"
         }
-    ]
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "DiviFramework\\UpdateChecker\\" : "src/"
+        }
+    }
 }
