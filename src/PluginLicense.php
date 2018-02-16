@@ -29,7 +29,7 @@ class PluginLicense {
 			$additionalHeaders = array();
 			$token = get_option($key, false);
 
-			if (!$token && !empty($token)) {
+			if ($token && !empty($token)) {
 				$additionalHeaders['Authorization'] = 'Bearer ' . $token;
 			} else {
 				// ensure option is delete. Next page reload will prompt for login.
