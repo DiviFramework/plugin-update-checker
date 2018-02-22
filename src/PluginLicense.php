@@ -49,6 +49,31 @@ class PluginLicense {
 			}
 			return $result;
 		});
+
+		// diviframework-client plugin check.
+		if (is_admin()) {
+			add_action('plugins_loaded', array($this, 'checkPluginDependancy'));
+		}
+
+	}
+
+	public function checkPluginDependancy() {
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		$container = $this->container;
+		$plugin_path = isset($this->container['hub_plugin_path']) ? $this->container['hub_plugin_path'] : 'diviframework/diviframework.php';
+
+		if (!is_plugin_active($plugin_path)) {
+			add_action('admin_notices', function () use ($container) {
+				$hub_plugin_name = isset($container['hub_plugin_name']) ? $container['hub_plugin_name'] : 'Divi Framework';
+				$hub_plugin_url = isset($container['hub_plugin_url']) ? $container['hub_plugin_url'] : 'https://www.diviframework.com/diviframework-CriQuirdenucoocojUngEucEucEidig';
+
+				$class = 'notice notice-error is-dismissible';
+
+				$message = sprintf('To recieve future updates for %s please install, activate and authenticate the %s plugin. Download <a href="%s">here</a>', $container['plugin_name'], $hub_plugin_name, $hub_plugin_url);
+
+				printf('<div class="%1$s"><p>%2$s</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>', $class, $message);
+			});
+		}
 	}
 
 }
