@@ -53,8 +53,29 @@ class PluginLicense {
 		// diviframework-client plugin check.
 		if (is_admin()) {
 			add_action('plugins_loaded', array($this, 'checkPluginDependancy'));
+			add_action('upgrader_process_complete', array($this, 'upgraderProcessComplete'), 10, 2);
 		}
 
+	}
+
+	// send a log request.
+	public function upgraderProcessComplete($upgrader_object, $options) {
+		$current_plugin = plugin_basename($this->container['plugin_file']);
+
+		if ($options['action'] == 'update' && $options['type'] == 'plugin') {
+			foreach ($options['plugins'] as $plugin) {
+				if ($plugin == $current_plugin) {
+					$url = $this->baseUrl . '/wp-json/wordpress-extensions/v1/downloads/' . $this->container['plugin_slug'] . '?v=' . $this->container['plugin_version'] . '&t=' . time();
+					$token = get_option($this->tokenOptionsKey, false);
+					$args = array(
+						'headers' => array(
+							'Authorization' => 'Bearer ' . $token,
+						),
+					);
+					wp_remote_get($url, $args);
+				}
+			}
+		}
 	}
 
 	public function checkPluginDependancy() {
