@@ -55,7 +55,6 @@ class PluginLicense {
 			add_action('plugins_loaded', array($this, 'checkPluginDependancy'));
 			add_action('upgrader_process_complete', array($this, 'upgraderProcessComplete'), 10, 2);
 		}
-
 	}
 
 	// send a log request.
