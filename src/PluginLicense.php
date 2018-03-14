@@ -41,11 +41,13 @@ class PluginLicense {
 		});
 
 		add_filter($this->updateChecker->getUniqueName('request_metadata_http_result'), function ($result) use ($key) {
-			//token error.
-			if ($result['response']['code'] == 403) {
-				// remove option
-				delete_option($key);
-				// redirect to login page?
+			if (is_array($result)) {
+				//token error.
+				if ($result['response']['code'] == 403) {
+					// remove option
+					delete_option($key);
+					// redirect to login page?
+				}
 			}
 			return $result;
 		});
